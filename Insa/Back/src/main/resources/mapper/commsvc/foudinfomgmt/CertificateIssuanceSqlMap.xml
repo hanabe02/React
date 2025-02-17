@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.commsvc.foudinfomgmt.mapper.CertificateIssuanceMapper" >
+
+	<resultMap type="CertificateIssuanceResTO" id="empDetailResult">
+		<result property="address" column="ADDRESS"/>
+		<result property="position" column="POSITION"/>
+		<result property="residentId" column="RESIDENT_ID"/>
+		<result property="hiredate" column="HIREDATE"/>
+		<result property="retiredate" column="RETIRE_DATE"/>
+	</resultMap>
+
+	<select id="selectEmpDeatilInfo" parameterType="String" resultMap="empDetailResult">
+		<![CDATA[
+		SELECT E.ADDRESS AS ADDRESS,
+		       P.POSITION AS POSITION,
+		       E.RESIDENT_ID AS RESIDENT_ID,
+		       C.HIREDATE AS HIREDATE,
+		       C.RETIRE_DATE AS RETIRE_DATE
+		FROM EMP E, POSITION P, WORK_INFO C
+		WHERE E.EMP_CODE =  #{empCode}
+		  AND E.POSITION_CODE = P.POSITION_CODE
+		  AND C.EMP_CODE = E.EMP_CODE
+		]]>
+	</select>
+</mapper>

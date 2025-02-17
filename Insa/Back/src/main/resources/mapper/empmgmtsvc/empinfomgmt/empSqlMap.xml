@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.EmpMapper">
+
+
+    <resultMap id="empResult" type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO">
+        <result property="empCode" column="EMP_CODE"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="deptCode" column="DEPT_CODE"/>
+        <result property="deptName" column="DEPT_NAME"/>
+        <result property="email" column="EMAIL"/>
+        <result property="position" column="POSITION"/>
+        <result property="birthDate" column="BIRTHDATE"/>
+        <result property="gender" column="GENDER"/>
+        <result property="mobileNumber" column="MOBILE_NUMBER"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="detailAddress" column="DETAIL_ADDRESS"/>
+        <result property="postNumber" column="POST_NUMBER"/>
+        <result property="lastSchool" column="LAST_SCHOOL"/>
+    </resultMap>
+
+
+    <resultMap type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO" id="empResult2">
+        <result property="empCode" column="EMP_CODE"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="deptName" column="DEPT_NAME"/>
+        <result property="birthDate" column="BIRTHDATE"/>
+        <result property="gender" column="GENDER"/>
+        <result property="mobileNumber" column="MOBILE_NUMBER"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="detailAddress" column="DETAIL_ADDRESS"/>
+        <result property="postNumber" column="POST_NUMBER"/>
+        <result property="email" column="EMAIL"/>
+        <result property="lastSchool" column="LAST_SCHOOL"/>
+        <result property="image" column="IMAGE"/>
+        <result property="position" column="POSITION"/>
+
+        <collection property="licenseInfoList"
+                    resultMap="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.LicenseInfoMapper.licenseInfoResult"
+                    javaType="java.util.ArrayList"/>
+        <collection property="familyInfoList"
+                    resultMap="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.FamilyInfoMapper.familyInfoResult"
+                    javaType="java.util.ArrayList"/>
+        <collection property="workInfo"
+                    resultMap="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.WorkInfoMapper.workInfoResult"
+                    javaType="java.util.ArrayList"/>
+    </resultMap>
+
+<!--    인사기록카드-->
+    <resultMap type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO" id="selectempdetailcard">
+        <result property="empCode" column="EMP_CODE"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="birthDate" column="BIRTHDATE"/>
+        <result property="gender" column="GENDER"/>
+        <result property="mobileNumber" column="MOBILE_NUMBER"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="detailAddress" column="DETAIL_ADDRESS"/>
+        <result property="postNumber" column="POST_NUMBER"/>
+        <result property="email" column="EMAIL"/>
+        <result property="lastSchool" column="LAST_SCHOOL"/>
+        <result property="certificationsName" column="CERTIFICATIONS_NAME"/>
+        <result property="acquisitionDate" column="ACQUISITION_DATE"/>
+        <result property="expirationDate" column="EXPIRATION_DATE"/>
+        <result property="testSubject" column="TEST_SUBJECT"/>
+        <result property="subject" column="SUBJECT"/>
+        <result property="score" column="SCORE"/>
+        <result property="highSchoolName" column="HIGHSCHOOL_NAME"/>
+        <result property="entranceDate" column="ENTRANCE_DATE"/>
+        <result property="graduateDate" column="GRADUATE_DATE"/>
+        <result property="major" column="MAJOR"/>
+        <result property="familyName" column="FAMILY_NAME"/>
+        <result property="relation" column="RELATION"/>
+        <result property="familyBirthdate" column="FAMILY_BIRTHDATE"/>
+        <result property="liveTogether" column="LIVE_TOGETHER"/>
+        <result property="placeOfEmployment" column="PLACE_OF_EMPLOYMENT"/>
+        <result property="employmentPeriod" column="EMPLOYMENT_PERIOD"/>
+        <result property="employmentPosition" column="POSITION"/>
+        <result property="jobDuties" column="JOB_DUTIES"/>
+        <result property="workAddress" column="WORK_ADDRESS"/>
+        <result property="occupation" column="OCCUPATION"/>
+        <result property="hiredate" column="HIREDATE"/>
+        <result property="employmentType" column="EMPLOYMENT_TYPE"/>
+    </resultMap>
+
+<!--    <resultMap id="authority" type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO">-->
+<!--        <result property="authority" column="AUTH_LEVEL"/>-->
+<!--        <result property="position" column="POSITION_CODE"/>-->
+<!--    </resultMap>>-->
+
+    <select id="selectEmp" parameterType="String" resultMap="empResult">
+        SELECT E.EMP_CODE
+             , E.EMP_NAME
+             , E.DEPT_CODE
+             , TO_CHAR(E.BIRTHDATE, 'YYYY/MM/DD') BIRTHDATE
+             , E.GENDER
+             , E.MOBILE_NUMBER
+             , E.ADDRESS
+             , E.DETAIL_ADDRESS
+             , E.POST_NUMBER
+             , E.EMAIL
+             , E.LAST_SCHOOL
+             , PD.DEPT_NAME
+             , PD.POSITION
+        FROM EMP E
+           , (SELECT *
+              FROM POSITION P,
+                   DEPT D) PD
+        WHERE e.EMP_NAME = #{empName}
+          AND E.POSITION_CODE = PD.POSITION_CODE(+)
+          AND E.DEPT_CODE = PD.DEPT_CODE(+)
+        ORDER BY E.EMP_CODE
+    </select>
+
+    <!-- AND E.ID = #id# -->
+    <select id="selectLastEmpCode" resultType="java.lang.String">
+        SELECT EMP_CODE
+        FROM EMP
+        WHERE ROWNUM = 1
+        ORDER BY EMP_CODE DESC
+    </select>
+
+<!--    <parameterMap type="map" id="empInsertParameter">-->
+<!--        <parameter  property="empCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="empName" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="birthdate" jdbcType="DATE" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="gender" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="mobileNumber" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="address" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="detailAddress" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="postNumber" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="email" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="lastSchool" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="deptCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="position" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="hobong" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="occupation" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="employment" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--    </parameterMap>-->
+
+    <insert id="registEmployee" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO">
+          <![CDATA[
+            INSERT INTO EMP
+            (
+                  EMP_CODE
+                , EMP_NAME
+                , BIRTHDATE
+                , GENDER
+                , MOBILE_NUMBER
+                , ADDRESS
+                , DETAIL_ADDRESS
+                , POST_NUMBER
+                , EMAIL
+                , LAST_SCHOOL
+                , IMAGE
+                , DEPT_CODE
+                , POSITION_CODE
+                , AUTHORITY
+                , HOBONG_CODE
+                , RESIDENT_ID
+            ) VALUES
+                (
+                      #{empCode}
+                    , #{empName}
+                    , TO_DATE(#{birthDate}, 'YYYY-MM-DD')
+                    , #{gender}
+                    , #{mobileNumber}
+                    , #{address}
+                    , #{detailAddress}
+                    , #{postNumber}
+                    , #{email, jdbcType=NULL}
+                    , #{lastSchool, jdbcType=NULL}
+                    , #{image, jdbcType=NULL}
+                    , #{deptCode, jdbcType=NULL}
+                    , #{position, jdbcType=NULL}
+                    , #{authority, jdbcType=NULL}
+                    , #{hobongCode, jdbcType=NULL}
+                    , #{residentId, jdbcType=NULL}
+                )
+          ]]>
+    </insert>
+
+    <insert id="registEmpWorkInfo" parameterType="map">
+          <![CDATA[
+        INSERT INTO WORK_INFO
+        (
+            EMP_CODE
+          , HIREDATE
+          , OCCUPATION
+          , EMPLOYMENT_TYPE
+          , HOBONG
+          , WORK_INFO_DAYS
+          , POSITION
+          , DEPT_NAME
+        ) VALUES
+            (
+              #{empCode}
+            , TO_DATE(#{hiredate}, 'YYYY-MM-DD')
+            , #{occupation}
+            , #{employmentType}
+            , #{hobong}
+            , #{workInfoDays}
+            , #{position}
+            , #{deptName}
+            )
+        ]]>
+    </insert>
+
+    <select id="selectAuthLevelByPositionCode" resultType="java.lang.String">
+        SELECT AUTH_LEVEL
+        FROM AUTHORITY
+        WHERE POSITION_CODE = #{position}
+    </select>
+
+    <select id="selectEmpList" resultMap="empResult">
+        SELECT E.EMP_CODE
+             , E.EMP_NAME
+             , E.DEPT_CODE
+             , TO_CHAR(E.BIRTHDATE, 'YYYY/MM/DD') BIRTHDATE
+             , E.GENDER
+             , E.MOBILE_NUMBER
+             , E.ADDRESS
+             , E.DETAIL_ADDRESS
+             , E.POST_NUMBER
+             , E.EMAIL
+             , E.LAST_SCHOOL
+             , PD.DEPT_NAME
+             , PD.POSITION
+        FROM EMP E
+           , (SELECT *
+              FROM POSITION P,
+                   DEPT D) PD
+        WHERE 1 = 1
+          AND E.POSITION_CODE = PD.POSITION_CODE(+)
+          AND E.DEPT_CODE = PD.DEPT_CODE(+)
+        ORDER BY E.EMP_CODE
+    </select>
+
+    <update id="insertEmpPic" parameterType="map">
+        UPDATE EMP
+        SET IMAGE = #{fileName}
+        WHERE RESIDENT_ID = #{residentId}
+    </update>
+
+    <select id="selectEmpListD" parameterType="string" resultMap="empResult">
+        SELECT E.EMP_CODE
+             , E.EMP_NAME
+             , TO_CHAR(E.BIRTHDATE, 'YYYY/MM/DD') BIRTHDATE
+             , E.GENDER
+             , E.MOBILE_NUMBER
+             , E.ADDRESS
+             , E.DETAIL_ADDRESS
+             , E.POST_NUMBER
+             , E.EMAIL
+             , E.LAST_SCHOOL
+             , PD.DEPT_NAME
+             , PD.POSITION
+        FROM EMP E
+           , (SELECT *
+              FROM POSITION P,
+                   DEPT D) PD
+        WHERE 1 = 1
+          AND E.POSITION_CODE = PD.POSITION_CODE(+)
+          AND E.DEPT_CODE = PD.DEPT_CODE(+)
+          AND PD.DEPT_NAME = #{dept}
+        ORDER BY E.EMP_CODE
+    </select>
+
+
+    <select id="getEmpCode" parameterType="string" resultMap="empResult">
+        SELECT E.EMP_CODE
+        FROM EMP
+        WHERE EMP_NAME = #{name}
+    </select>
+
+    <select id="selectEmpCode" parameterType="string" resultType="java.lang.String">
+        SELECT E.EMP_CODE as EMP_CODE
+        FROM DAT_ATTD D, EMP E
+        WHERE
+            E.EMP_NAME = D.EMP_ENAME
+        AND E.EMP_NAME = #{empName}
+        AND D.DEPT_CODE =  #{deptCode}
+    </select>
+
+    <select id="selectEmpDetail" parameterType="String" resultMap="empResult">
+        select
+            EMP_NAME as empName
+        from emp
+        where EMP_CODE = #{empCode}
+
+
+    </select>
+
+    <select id="selectEmployee" parameterType="string" resultMap="empResult2">
+        SELECT E.EMP_CODE
+             , E.EMP_NAME
+             , TO_CHAR(E.BIRTHDATE, 'YYYY/MM/DD') BIRTHDATE
+             , E.GENDER
+             , E.MOBILE_NUMBER
+             , E.ADDRESS
+             , E.DETAIL_ADDRESS
+             , E.POST_NUMBER
+             , E.EMAIL
+             , E.LAST_SCHOOL
+             , PD.DEPT_NAME
+             , PD.POSITION
+             , EV.ACHIEVEMENT
+             , EV.ABILITY
+             , EV.ATTITUDE
+             , PD.LICENSE_CODE
+             , PD.LICENSE_NAME
+             , PD.GET_DATE
+             , PD.EXPIRE_DATE
+             , PD.LICENSE_LEVEL
+             , PD.LICENSE_CENTER
+             , PD.ISSUE_NUMBER
+             , PD.EMP_CODE    AS                  L_EMP_CODE
+             , PD.W_DEPT_NAME AS                  W_DEPT_NAME
+             , PD.W_EMP_CODE  AS                  W_EMP_CODE
+             , PD.EMPLOYMENT_TYPE
+             , PD.HIREDATE
+             , PD.HOBONG
+             , PD.OCCUPATION
+             , PD.RETIRE_DATE
+             , PD.SALARY_TYPE
+             , PD.WORK_INFO_DAYS
+             , PD.F_EMP_CODE  AS                  F_EMP_CODE
+             , PD.FAMILY_CODE
+             , PD.FAMILY_NAME
+             , PD.RELATION
+             , PD.BIRTHDATE   AS                  F_BIRTHDATE
+             , PD.LIVE_TOGETHER
+        FROM EMP E,
+             (SELECT P.POSITION_CODE,
+                     P.POSITION,
+                     D.DEPT_CODE,
+                     D.DEPT_NAME,
+                     L.LICENSE_CODE,
+                     L.LICENSE_NAME,
+                     L.GET_DATE,
+                     L.EXPIRE_DATE,
+                     L.LICENSE_LEVEL,
+                     L.LICENSE_CENTER,
+                     L.ISSUE_NUMBER,
+                     L.EMP_CODE,
+                     W.DEPT_NAME AS W_DEPT_NAME,
+                     W.EMP_CODE  AS W_EMP_CODE,
+                     W.EMPLOYMENT_TYPE,
+                     W.HIREDATE,
+                     W.HOBONG,
+                     W.OCCUPATION,
+                     W.RETIRE_DATE,
+                     W.SALARY_TYPE,
+                     W.WORK_INFO_DAYS,
+                     F.EMP_CODE  AS F_EMP_CODE,
+                     F.FAMILY_CODE,
+                     F.FAMILY_NAME,
+                     F.RELATION,
+                     F.BIRTHDATE,
+                     F.LIVE_TOGETHER
+              FROM POSITION P,
+                   DEPT D,
+                   LICENSE_INFO L,
+                   WORK_INFO W,
+                   FAMILY_INFO F
+              WHERE W.EMP_CODE = #{empCode}) PD,
+             (SELECT * FROM EMP_EVAL) EV
+        WHERE 1 = 1
+          AND E.POSITION_CODE = PD.POSITION_CODE(+)
+          AND E.DEPT_CODE = PD.DEPT_CODE(+)
+          AND E.EMP_CODE = #{empCode}
+          AND E.EMP_CODE = EV.EMP_CODE(+)
+        ORDER BY E.EMP_CODE
+    </select>
+
+<!--    인사기록 카드 -->
+    <select id="empDetailcard" parameterType="string" resultMap="selectempdetailcard">
+        SELECT E.EMP_CODE
+             ,E.EMP_NAME
+             , TO_CHAR(E.BIRTHDATE, 'YYYY-MM-DD') BIRTHDATE
+             , E.GENDER
+             , E.MOBILE_NUMBER
+             , E.ADDRESS
+             , E.DETAIL_ADDRESS
+             , E.POST_NUMBER
+             , E.EMAIL
+             , E.LAST_SCHOOL
+             , CER.CERTIFICATIONS_NAME
+             , TO_CHAR(EMP_CER.ACQUISITION_DATE, 'YYYY-MM-DD') ACQUISITION_DATE
+             , TO_CHAR(EMP_CER.EXPIRATION_DATE, 'YYYY-MM-DD') EXPIRATION_DATE
+             , LAN.TEST_SUBJECT
+             , LAN.SUBJECT
+             , TO_NUMBER(EMP_LAN.SCORE) SCORE
+             , EDU.HIGHSCHOOL_NAME
+             , TO_CHAR(EDU.ENTRANCE_DATE, 'YYYY-MM-DD') ENTRANCE_DATE
+             , TO_CHAR(EDU.GRADUATE_DATE, 'YYYY-MM-DD') GRADUATE_DATE
+             , EDU.MAJOR
+             , FAM.FAMILY_NAME
+             , FAM.RELATION
+             , TO_CHAR(FAM.FAMILY_BIRTHDATE, 'YYYY-MM-DD') FAMILY_BIRTHDATE
+             , FAM.LIVE_TOGETHER
+             , WOR.PLACE_OF_EMPLOYMENT
+             , WOR.EMPLOYMENT_PERIOD
+             , WOR.POSITION
+             , WOR.JOB_DUTIES
+             , WOR.WORK_ADDRESS
+             , TO_CHAR(WORINFO.HIREDATE, 'YYYY-MM-DD') HIREDATE
+             , WORINFO.OCCUPATION
+             , WORINFO.EMPLOYMENT_TYPE
+        FROM EMP E,
+             CERTIFICATIONS CER,
+             EMP_CERTIFICATIONS EMP_CER,
+             EMP_LANGUAGE_SKILLS EMP_LAN,
+             LANGUAGE_SKILLS LAN,
+             EDUCATION_INFO EDU,
+             FAMILY_INFO FAM,
+             WORKEXPERIENCE WOR,
+             WORK_INFO WORINFO
+        WHERE E.EMP_CODE = #{empCode}
+          AND E.EMP_CODE = EMP_CER.EMP_CODE
+          AND E.EMP_CODE = EMP_LAN.EMP_CODE
+          AND E.EMP_CODE = EDU.EMP_CODE
+          AND E.EMP_CODE = FAM.EMP_CODE
+          AND E.EMP_CODE = WOR.EMP_CODE
+          AND E.EMP_CODE = WORINFO.EMP_CODE
+          AND CER.CERTIFICATIONS_CODE = EMP_CER.CERTIFICATIONS_CODE
+          AND EMP_LAN.TEST_SUBJECT_CODE = LAN.TEST_SUBJECT_CODE
+    </select>
+
+<!--인사기록카드 수정-->
+    <update id="updateEmployee" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO" statementType="CALLABLE">
+<![CDATA[
+        {CALL
+            P_UPDATE_EMPLOYEE_INFO(
+                    #{empCode, mode=IN, jdbcType=VARCHAR},
+                    #{empName, mode=IN, jdbcType=VARCHAR},
+                    #{birthDate, mode=IN, jdbcType=VARCHAR},
+                    #{gender, mode=IN, jdbcType=VARCHAR},
+                    #{mobileNumber, mode=IN, jdbcType=VARCHAR},
+                    #{address, mode=IN, jdbcType=VARCHAR},
+                    #{detailAddress, mode=IN, jdbcType=VARCHAR},
+                    #{postNumber, mode=IN, jdbcType=VARCHAR},
+                    #{email, mode=IN, jdbcType=VARCHAR},
+                    #{lastSchool, mode=IN, jdbcType=VARCHAR},
+                    #{certificationsName, mode=IN, jdbcType=VARCHAR},
+                    #{acquisitionDate, mode=IN, jdbcType=DATE},
+                    #{expirationDate, mode=IN, jdbcType=DATE},
+                    #{testSubject, mode=IN, jdbcType=VARCHAR},
+                    #{subject, mode=IN, jdbcType=VARCHAR},
+                    #{score, mode=IN, jdbcType=INTEGER},
+                    #{highSchoolName, mode=IN, jdbcType=VARCHAR},
+                    #{entranceDate, mode=IN, jdbcType=DATE},
+                    #{graduateDate, mode=IN, jdbcType=DATE},
+                    #{major, mode=IN, jdbcType=VARCHAR},
+                    #{familyName, mode=IN, jdbcType=VARCHAR},
+                    #{relation, mode=IN, jdbcType=VARCHAR},
+                    #{familyBirthdate, mode=IN, jdbcType=DATE},
+                    #{liveTogether, mode=IN, jdbcType=VARCHAR},
+                    #{placeOfEmployment, mode=IN, jdbcType=VARCHAR},
+                    #{employmentPeriod, mode=IN, jdbcType=VARCHAR},
+                    #{employmentPosition, mode=IN, jdbcType=VARCHAR},
+                    #{jobDuties, mode=IN, jdbcType=VARCHAR},
+                    #{workAddress, mode=IN, jdbcType=VARCHAR},
+                    #{hiredate, mode=IN, jdbcType=DATE},
+                    #{occupation, mode=IN, jdbcType=VARCHAR},
+                    #{employmentType, mode=IN, jdbcType=VARCHAR}
+            )
+            }
+        ]]>
+    </update>
+
+
+<!--    <update id="updateEmployee" parameterType="EmpTO">-->
+<!--        UPDATE EMP-->
+<!--        SET EMP_NAME       = #{empName}-->
+<!--          , BIRTHDATE      = TO_DATE(#{birthdate,jdbcType=DATE}, 'YYYY/MM/DD')-->
+<!--          , GENDER         = #{gender}-->
+<!--          , MOBILE_NUMBER  = #{mobileNumber,jdbcType=VARCHAR}-->
+<!--          , ADDRESS        = #{address,jdbcType=VARCHAR}-->
+<!--          , DETAIL_ADDRESS = #{detailAddress,jdbcType=VARCHAR}-->
+<!--          , POST_NUMBER    = #{postNumber,jdbcType=VARCHAR}-->
+<!--          , EMAIL          = #{email,jdbcType=VARCHAR}-->
+<!--          , LAST_SCHOOL    = #{lastSchool}-->
+<!--        WHERE EMP_CODE = #{empCode}-->
+<!--    </update>-->
+
+<!--    <parameterMap type="map" id="empDeleteParameter">-->
+<!--        <parameter property="empCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>-->
+<!--        <parameter property="errorCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>-->
+<!--        <parameter property="errorMsg" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>-->
+<!--    </parameterMap>-->
+
+    <delete id="deleteEmployee" parameterType="String">
+      <![CDATA[
+            DELETE FROM EMP
+            WHERE EMP_CODE = #{empCode}
+        ]]>
+   </delete>
+</mapper>

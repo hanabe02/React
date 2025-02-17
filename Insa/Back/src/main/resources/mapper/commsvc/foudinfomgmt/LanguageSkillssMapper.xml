@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.commsvc.foudinfomgmt.mapper.LanguageSkillssMapper">
+
+
+    <resultMap type="kr.co.seoulit.insa.commsvc.foudinfomgmt.to.LanguageSkillssTo" id="languageSkillsResult">
+        <result property="testSubjectCode" column="TEST_SUBJECT_CODE"/>
+        <result property="testSubject" column="TEST_SUBJECT"/>
+        <result property="subject" column="SUBJECT"/>
+    </resultMap>
+
+
+    <select id="selectLanguageSkillsList" resultMap="languageSkillsResult">
+        SELECT  TEST_SUBJECT_CODE
+             , TEST_SUBJECT
+             , SUBJECT
+        FROM LANGUAGE_SKILLS
+        ORDER BY TEST_SUBJECT_CODE
+    </select>
+
+
+
+
+</mapper>

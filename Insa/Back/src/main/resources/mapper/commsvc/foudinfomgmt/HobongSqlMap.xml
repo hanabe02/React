@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.commsvc.foudinfomgmt.mapper.HobongMapper">
+
+	<resultMap id="hobongResult" type="kr.co.seoulit.insa.commsvc.foudinfomgmt.to.HobongTO">
+		<result property="hobongLevel" column="HOBONG_LEVEL"/>
+		<result property="baseSalary" column="BASE_SALARY"/>
+		<result property="positionAllowance" column="POSITION_ALLOWANCE"/>
+		<result property="longevityBonus" column="LONGEVITY_BONUS"/>
+		<result property="totalHobong" column="TOTAL_HOBONG"/>
+	</resultMap>
+
+	<select id="selectHobongList" parameterType="String" resultMap="hobongResult">
+		SELECT  H.HOBONG_LEVEL as HOBONG_LEVEL
+			 ,P.BASE_SALARY as BASE_SALARY
+			 ,P.POSITION_ALLOWANCE AS POSITION_ALLOWANCE
+			 ,P.LONGEVITY_BONUS AS LONGEVITY_BONUS
+			 ,P.TOTAL_HOBONG AS TOTAL_HOBONG
+		FROM HOBONG H, POSITION_HOBONG P
+		WHERE H.HOBONG_CODE = P.HOBONG_CODE
+		  AND p.POSITION_CODE = #{positionCode}
+		ORDER BY LENGTH(H.HOBONG_LEVEL)
+	</select>
+
+	<select id="selectHobongCodeByHobongLevel" parameterType="String" resultType="java.lang.String">
+		SELECT HOBONG_CODE
+		FROM HOBONG
+		WHERE HOBONG_LEVEL = #{hobongLevel}
+	</select>
+
+	<insert id="insertHobongList" parameterType="HobongReqTO">
+		<![CDATA[
+		{
+			CALL INSERT_HOBONG_PROCEDURE (
+				#{positionCode, mode=IN},
+				#{baseSalaryInit, mode=IN},
+				#{baseSalaryIncr, mode=IN},
+				#{posAllowanceInit, mode=IN},
+				#{posAllowanceIncr, mode=IN},
+				#{longevityBonusInit, mode=IN},
+				#{longevityBonusIncr, mode=IN},
+				#{applyDate, mode=IN},
+				#{applyEndDate, mode=IN}
+			)
+			}
+		]]>
+	</insert>
+
+	<update id="updateHobongByPercentage" parameterType="HobongPercentageTO">
+		<![CDATA[
+		UPDATE POSITION_HOBONG
+		SET
+			BASE_SALARY = BASE_SALARY + (BASE_SALARY * ( #{baseSalaryPer} / 100)),
+			POSITION_ALLOWANCE = POSITION_ALLOWANCE + (POSITION_ALLOWANCE * ( #{posAllowancePer} / 100)),
+			LONGEVITY_BONUS = LONGEVITY_BONUS + (LONGEVITY_BONUS * ( #{longevityBonusPer} / 100)),
+			TOTAL_HOBONG = BASE_SALARY + POSITION_ALLOWANCE + LONGEVITY_BONUS
+		WHERE
+			POSITION_CODE = #{positionCode}
+		  AND APPLY_DATE = #{applyDate}
+		  AND APPLY_END_DATE = #{applyEndDate}
+		]]>
+	</update>
+
+	<update id="updateHobongByFixed" parameterType="HobongFixedTO">
+		<![CDATA[
+		UPDATE POSITION_HOBONG
+		SET
+			BASE_SALARY = (BASE_SALARY + #{baseSalaryFixed}),
+			POSITION_ALLOWANCE = (POSITION_ALLOWANCE + #{posAllowanceFixed}),
+			LONGEVITY_BONUS = (LONGEVITY_BONUS + #{longevityBonusFixed}),
+			TOTAL_HOBONG = BASE_SALARY + POSITION_ALLOWANCE + LONGEVITY_BONUS
+		WHERE
+			POSITION_CODE = #{positionCode}
+		  AND APPLY_DATE = #{applyDate}
+		  AND APPLY_END_DATE = #{applyEndDate}
+		]]>
+	</update>
+
+</mapper>

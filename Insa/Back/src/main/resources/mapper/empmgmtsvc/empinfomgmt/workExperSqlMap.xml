@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.WorkExperMapper">
+
+
+    <resultMap type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.WorkExperTo" id="workExperResult">
+        <result property="empCode" column="W_EMP_CODE" />
+        <result property="placeOfEmployment" column="PLACE_OF_EMPLOYMENT" />
+        <result property="employmentPeriod" column="EMPLOYMENT_PERIOD" />
+        <result property="workedPosition" column="POSITION" />
+        <result property="jobDuties" column="JOB_DUTIES" />
+        <result property="workAddress" column="WORK_ADDRESS" />
+    </resultMap>
+
+    <select id="selectWorkExperList" parameterType="string" resultMap="workExperResult">
+        SELECT EMP_CODE AS W_EMP_CODE
+             , PLACE_OF_EMPLOYMENT
+             , EMPLOYMENT_PERIOD
+             , POSITION
+             , JOB_DUTIES
+             , WORK_ADDRESS
+        FROM WORKEXPERIENCE
+        WHERE EMP_CODE = #{empCode}
+    </select>
+
+    <insert id="insertWorkExper" parameterType="map">
+        INSERT INTO WORKEXPERIENCE VALUES ( #{empCode}
+                                          , #{placeOfEmployment}
+                                          , #{employmentPeriod}
+                                          , #{workedPosition}
+                                          , #{jobDuties}
+                                          , #{workAddress})
+    </insert>
+
+    <update id="updateWorkExper" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.WorkExperTo">
+        UPDATE WORKEXPERIENCE SET
+            PLACE_OF_EMPLOYMENT= #{placeOfEmployment}
+                                , EMPLOYMENT_PERIOD = #{employmentPeriod}
+                                , POSITION = #{workedPosition}
+                                , JOB_DUTIES = #{jobDuties}
+                                , WORK_ADDRESS = #{workAddress}
+        WHERE EMP_CODE = #{empCode}
+    </update>
+
+    <delete id="deleteWorkExper" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.WorkExperTo">
+        DELETE FROM WORKEXPERIENCE
+        WHERE EMP_CODE = #{empCode}
+    </delete>
+
+</mapper>

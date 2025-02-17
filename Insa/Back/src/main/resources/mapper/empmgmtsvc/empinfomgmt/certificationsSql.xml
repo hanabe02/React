@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.CertificationsMapper">
+
+
+    <resultMap type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.CertificationsTo" id="certificationsResult">
+        <result property="certificationsCode" column="CERTIFICATIONS_CODE" />
+        <result property="certificationsName" column="CERTIFICATIONS_NAME" />
+    </resultMap>
+
+    <select id="selectCertificationsList" parameterType="string" resultMap="certificationsResult">
+        SELECT CERTIFICATIONS_CODE
+             , CERTIFICATIONS_NAME
+        FROM CERTIFICATIONS
+        WHERE CERTIFICATIONS_CODE = #{certificationsCode}
+    </select>
+
+    <insert id="insertCertifications" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.CertificationsTo">
+        INSERT INTO CERTIFICATIONS VALUES ( #{certificationsCode}
+                                          , EDUCATION_CODE_SEQ.NEXTVAL
+                                          , #{certificationsName})
+    </insert>
+
+    <update id="updateCertifications" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.CertificationsTo">
+        UPDATE CERTIFICATIONS SET
+            CERTIFICATIONS_NAME= #{certificationsName}
+        WHERE CERTIFICATIONS_CODE = #{certificationsCode}
+    </update>
+
+    <delete id="deleteCertifications" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.CertificationsTo">
+        DELETE FROM CERTIFICATIONS
+        WHERE CERTIFICATIONS_CODE = #{certificationsCode}
+    </delete>
+
+</mapper>

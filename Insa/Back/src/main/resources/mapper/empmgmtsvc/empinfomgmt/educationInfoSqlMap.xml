@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.EducationInfoMapper">
+
+
+    <resultMap type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EducationInfoTo" id="educationInfoResult">
+        <result property="empCode" column="E_EMP_CODE" />
+        <result property="schoolName" column="HIGHSCHOOL_NAME" />
+        <result property="major" column="MAJOR" />
+        <result property="entranceDate" column="ENTRANCE_DATE" />
+        <result property="graduateDate" column="GRADUATE_DATE" />
+    </resultMap>
+
+    <select id="selectEducationList" parameterType="string" resultMap="educationInfoResult">
+        SELECT EMP_CODE AS E_EMP_CODE
+             , HIGHSCHOOL_NAME
+             , MAJOR
+             , to_char(ENTRANCE_DATE,'YYYY/MM/DD') ENTRANCE_DATE
+             , to_char(GRADUATE_DATE,'YYYY/MM/DD') GRADUATE_DATE
+        FROM EDUCATION_INFO
+        WHERE EMP_CODE = #{empCode}
+    </select>
+
+    <insert id="insertEducationInfo" parameterType="map">
+        INSERT INTO EDUCATION_INFO VALUES ( #{empCode}
+                                          , #{schoolName}
+                                          , #{major}
+                                          , TO_DATE(#{entranceDate}, 'YYYY/MM/DD')
+                                          , TO_DATE(#{graduateDate}, 'YYYY/MM/DD'))
+    </insert>
+
+    <update id="updateEducationInfo" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EducationInfoTo">
+        UPDATE EDUCATION_INFO SET
+            HIGHSCHOOL_NAME= #{schoolName}
+                             , MAJOR = #{major}
+                             , ENTRANCE_DATE = TO_DATE(#{entranceDate}, 'YYYY/MM/DD')
+                             , GRADUATE_DATE = TO_DATE(#{graduateDate}, 'YYYY/MM/DD')
+        WHERE EMP_CODE = #{empCode}
+    </update>
+
+    <delete id="deleteEducationInfo" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EducationInfoTo">
+        DELETE FROM EDUCATION_INFO
+        WHERE EMP_CODE = #{empCode}
+    </delete>
+
+</mapper>

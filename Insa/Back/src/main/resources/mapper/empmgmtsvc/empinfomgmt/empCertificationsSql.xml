@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.EmpCertificationsMapper">
+
+
+    <resultMap type="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.CertificationsTo" id="empCertificationsResult">
+        <result property="empCode" column="C_EMP_CODE" />
+        <result property="certificationsCode" column="CERTIFICATIONS_CODE" />
+        <result property="acquisitionDate" column="ACQUISTION_DATE" />
+        <result property="expirationDate" column="EXPIRATION_DATE" />
+    </resultMap>
+
+    <select id="selectEmpCertificationsList" parameterType="string" resultMap="empCertificationsResult">
+        SELECT EMP_CODE AS C_EMP_CODE
+             , CERTIFICATIONS_CODE
+             , to_char(ACQUISTION_DATE,'YYYY/MM/DD') ACQUISTION_DATE
+             , to_char(EXPIRATION_DATE,'YYYY/MM/DD') EXPIRATION_DATE
+        FROM EMP_CERTIFICATIONS
+        WHERE EMP_CODE = #{empCode}
+    </select>
+
+    <insert id="insertEmpCertifications" parameterType="map">
+        INSERT INTO EMP_CERTIFICATIONS VALUES ( #{empCode}
+                                              , #{certificationsCode}
+                                              , TO_DATE(#{acquisitionDate}, 'YYYY/MM/DD')
+                                              , TO_DATE(#{expirationDate}, 'YYYY/MM/DD'))
+    </insert>
+
+    <update id="updateEmpCertifications" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.CertificationsTo">
+        UPDATE EMP_CERTIFICATIONS SET
+
+            ACQUISTION_DATE = TO_DATE(#{acquisitionDate}, 'YYYY/MM/DD')
+                                , EXPIRATION_DATE = TO_DATE(#{expirationDate}, 'YYYY/MM/DD')
+        WHERE EMP_CODE = #{empCode}
+          and EDUCATION_CODE = #{educationCode}
+    </update>
+
+    <delete id="deleteEmpCertifications" parameterType="kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.CertificationsTo">
+        DELETE FROM EMP_CERTIFICATIONS
+        WHERE EMP_CODE = #{empCode}
+          AND CERTIFICATIONS_CODE = #{certificationsCode}
+    </delete>
+
+</mapper>
