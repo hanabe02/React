@@ -18,7 +18,7 @@
     변경 된 상태 값에 따라 
     버튼을 클릭시 handleMapClick() 함수가 실행 되는 원리
 
-## <option> 
+### option
 
     option은 HTML <select> 드롭다운 안에서 '선택지 하나'를 나타내는 요소
     사용자에게 보이는 라벨(텍스트)과 폼/상태로 전달되는 값(value)을 갖는다.
@@ -31,7 +31,7 @@
     ))}
     
 
-### <select>
+### select
 
 ### useEffect
 
