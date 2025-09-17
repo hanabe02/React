@@ -22,6 +22,7 @@
     버튼을 클릭시 handleMapClick() 함수가 실행 되는 원리
 
 ### <option> 
+
     option은 HTML <select> 드롭다운 안에서 '선택지 하나'를 나타내는 요소
     사용자에게 보이는 라벨(텍스트)과 폼/상태로 전달되는 값(value)을 갖는다.
 
@@ -36,11 +37,13 @@
 ### <select>
 
 ### useEffect
+
     렌더 이후 (화면 업데이트) 끝난 뒤 실행되는 '사이드 이펙트'
     여기서 말하는 사이드 이펙트는
      ㄴ 데이터 fetch, 이벤트/구독 등록, 타이머, 콘솔로그, 수동 DOM 조작, 지도 SDK 호출 같은 것을 말한다.
 
 ### any 타입 제거 
+
     ex)
     const res = await fetch() 
      ㄴ 를 통해서 벡엔드에서 데이터를 가져올 때
@@ -60,6 +63,7 @@
         (필드명 변경, 파생값, 기본값 채우기, 날짜 포맷 등)
   
 ### err 메시지 any 타입 제거
+
     ex) err.code
     any 타입을 사용하는 기본적인 이유
      ㄴ err.code 에 속성 접근을 할때 catch 변수 타입이 unknown 이라 
@@ -74,6 +78,7 @@
     
 
 ### session await getServerSession(authOptions) any 타입 제거
+
     ex) 
     any 타입 : 타입 검사를 통째로 꺼버린다. 이후 err.code, user.xyzzy 같은 존재하지 않는 속성도 에러 없이 접근됨
     as {userid?: string }: user 안에 userid 가 있을 수도 있고 string 없을 수도 있다.
