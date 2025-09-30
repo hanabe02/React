@@ -1,0 +1,47 @@
+프론트, 서버 만지지도 않았는데 자기 혼자서 api 요청 계속 하는 문제 해결
+
+원인 분석
+1) PatientCalendar 컴포넌트의 useEffect 에서 문제가 발생하고 있었다.
+  useEffect(() => {
+    const fetchHolidays = async () => { ... };
+    fetchHolidays();
+  }, [appointments]);
+  appointments가 deps 배열에 있는데 > appointments가 변할 때마다 fetchHolidays 실행
+2) appointments 배열의 재생성 문제로
+  const appointments = [
+    { id: '1', date: '2025-07-13', ... },
+    ...
+  ];
+  이 배열은 page 컴포넌트가 렌더링 될 때마다 새로운 배열로 만들어진다.
+  값은 같아도 reference가 달라서 react는 appointments가 변경된 걸로 인식
+  그 결과 useEffect가 매 렌더마다 실행 > api/holidays가 계속 호출이 되고 있던 것이다.
+
+3) Dev 환경에서는 StrictMode 영향
+  next.js dev 모드 = react strictMode 켜짐
+  useEffect가 의도적으로 2번 실행됨
+  그래서 API 호출이 더 많아짐 > 로그가 미친 듯이 쌓이는 것처럼 보임
+
+때문에 계속 리렌더링 되고 있었던 이유는
+  appointments 배열이 렌더마다 새로 생성돼서 useEffect가 매번 실행 됨
+  /api/holidays api 호출이 계속 발생 
+
+  좀더 명확히 설명하자면
+  appointments가 변할 때 호출을 한다 > 이건 문제가 없다
+  하지만 개발환경 dev 에서 React strict Mode 때문에 useEffect가 한 번더 실행이 된다.
+
+  즉 한 번만 호출해도 연간 12번 4년 48번 외부 api를 떄리게된다.
+
+  때문에 엄청나게 api 호출이 많이 뜨게 된 것이다.
+
+
+
+
+
+
+
+
+
+
+
+
+
