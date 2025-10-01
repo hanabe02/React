@@ -14,4 +14,52 @@ login 페이지 코드 개념 정리
   1-7 redirect:false 를 하는 이유는 signIn은 성공 시 자동으로 페이지 리다이렉트를 하기 때문에, 대신 js 객체 형태의 응답을 반환한다.
 
 전체적인 코드 흐르미
-1. /login/page.tsx 
+1. /login/page.tsx 로그인 버튼 클릭
+    form 태그는 html의 기본 품 요소로 onSubmit+{handleSubmit} 이벤트 핸들러 등록된 상태
+    즉, 이 폼이 제출될 때 handleSubmit 함수를 실행하라는 뜻
+2. <button type="submit"> 의 역할
+    html 규칙 button의 기본 타입은 submit 이다.
+    type=submit 일 경우 버튼 클릭 시 > 폼을 제출하는 동작이 발생한다.
+    즉, 버튼이 <form> 태그 안에 있으면 클릭할 때 submit 이벤트가 해당 form에 전달 된다.
+3. form 에 등록되어 있는 onSubmit={handleSubmit} 이 실행 되는 것이다.
+4. handleSubmit 함수가 실행이 되면서
+    e.preventDefault() : form 기본 제출 동작(페이지 새로고침) 방지
+    setLoading(), setError() : 상태 초기화
+    console.log("Attempting to sign in with:", { userid, password }); 앞단에 명령어가 찍힌다.
+5. NextAuth 클라이언트 호출 
+    credentials -> credentialsProvider를 쓰겠다는 의미
+        그럼 NextAuth 서버 API router 자동으로 /api/auth/callback/credentials post 요청 전송
+    NextAuth 냅부 -> authorize(credentials) 실행
+6. src/app/api/auth/..nextauth/route.ts 실행
+    이 파일에서 import 하는 authOptions 만 NextAuth에 전달
+7. src/lib/auth-options.ts 실행
+    실제로 실행되는 authorize 는 auth-options.ts 안에 있는 함수 실행
+    authOptions 안에 있는 credentialsProvider의 authorize 함수가 실행 됨,
+    여기서 credentials(userid, password)를 꺼내고, db 검증 (verifyUser) 호출
+8. verifyUser() 실행
+    prisma를 사용해서 데이터베이스 userid가 일치하는 사용자를 조회 
+    없으면 null 반환 -> 로그인 실패
+    const ok = await bcrypt.compare(password, user.password);
+    ㄴ DB에 저장된 해시된 비밀번호(user.password) 와 사용자가 입력한 비밀번호(password)를 bcrypt로 비교
+    ㄴ 실패하면 NULL 반환 -> 로그인 실패
+    ㄴ 성공하면 사용자의 최소 정보만 객체로 반환 > NextAuth authorize나 jwt 발급에 사용
+
+정리하면 DB에서 사용자 확인 + 비밀번호 검증 후 정보 반환
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
