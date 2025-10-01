@@ -33,8 +33,21 @@
 
   때문에 엄청나게 api 호출이 많이 뜨게 된 것이다.
 
+[코드 실행 과정]
 
-
+1. emr/page.tsx 파일에서 실행 버튼을 클릭하면
+2. PatientCalendar 컴포넌트 실행
+  2-1 props (appointments, patientName) 이 매개변수로 들어온다.
+  2-2 useState 훅이 실행되어 초기 state 값 events = [] 이 설정
+  2-3 jsx 반환 (초기 렌더링 준비) card, cardHeader, FullCalendar 같은 구조가 React에 의해 가상 DOM 준비 된다.
+  2-4 events 아직 빈 배열이라, 아직 아무 이벤트도 표시 되지 않는다.
+  2-5 화면에 실제 DOM 렌더링 React가 준비된 가상 DOM을 그린다. (이때 버튼, 캘린더 ui 보이지만 이벤트 없음)
+3. useEffect 실행 appointments -> events 변환
+  3-1 렌더링이 끝난 뒤 실행
+  3-2 setEvents(appointmentEvents) 실행되면 events 값이 바뀜
+  3-3 react는 patientCalendar를 다시 호출 jsx 재생성
+  3-4 events에 데이터가 들어있으므로, FullCalendar 이벤트들을 표시하게 됨.
+4. events가 업데이트 되었으므로 두번째 useEffect 실행 (의존성 배열에 있는 값이 이전 렌더링 때와 달라졌을 때만 다시 실행된다.)
 
 
 
