@@ -43,6 +43,9 @@ login 페이지 코드 개념 정리
     ㄴ DB에 저장된 해시된 비밀번호(user.password) 와 사용자가 입력한 비밀번호(password)를 bcrypt로 비교
     ㄴ 실패하면 NULL 반환 -> 로그인 실패
     ㄴ 성공하면 사용자의 최소 정보만 객체로 반환 > NextAuth authorize나 jwt 발급에 사용
+    ㄴ 이때 user 의 타입은 prisma.user -> prisma Client에서 자동 생성된 모델
+    ㄴ findUnique는 DB에서 레코드를 조회, 각 테이블 마다 typescript 타입을 자동으로 생성한다. 
+    ㄴ user 테이블에 id, username, email, password 등..
 
 정리하면 DB에서 사용자 확인 + 비밀번호 검증 후 정보 반환
 
