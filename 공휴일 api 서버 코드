@@ -1,0 +1,61 @@
+import { NextResponse } from "next/server";
+// next.js 에서 서버 응답을 만들 때 쓰는 유틸이다. json 응답 설정 등 편하게 처리 가능
+
+const SERVICE_KEY = process.env.KOREA_HOLIDAY_API_KEY;
+// 날씨 api 키를 읽어온다. 이것이 없는 경우 에러를 던지거나 400응답을 주는 체크 추가 (안전성 up) 
+
+export async function GET(req: Request) {
+// next.js : route handler 규칙 get, post 등으로 함수명을 export 하면 
+// 해당 http 메서드를 처리 req; Request는 표준 Web Request 타입 이다. (Next의 Request)
+  try {
+    let allHolidays: any[] = [];
+
+    // ✅ 2024 ~ 2027 반복
+    for (let year = 2024; year <= 2027; year++) {
+      for (let month = 1; month <= 12; month++) {
+    // 공공 api는 연 월 단위로 데이터를 제공하는 경우가 많아,
+    // 결과적으로 4년 x 12달 48번의 http 요청을 발생시킨다.
+        const url = `https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo
+          ?solYear=${year}
+          &solMonth=${String(month).padStart(2, "0")}
+          &ServiceKey=${SERVICE_KEY}
+          &_type=json`.replace(/\s+/g, "");
+    // 템플릿 리터럴로 여러 줄에 걸쳐 url을 만듬, 
+    // .replace(/\s+/g, ""); 공백을 제거할 수 있으므로 가독성/유지보수성에서 덜 안전함down
+
+        const res = await fetch(url);
+        const data = await res.json();
+        // fetch 호출 및 json 파싱 
+
+        const items = data.response?.body?.items?.item || [];
+        const holidays = Array.isArray(items) ? items : [items];
+        // items 추출 및 단일/배열 정규화
+        // items.item이 한 건이면 객체, 여러 건이면 배열로 오는 경우가 많아
+        // 그래서 Array.isArray로 검사해서 항상 배열로 통일한다. 
+
+        holidays.forEach((h: any) => {
+          allHolidays.push({
+            year,
+            name: h.dateName,
+            date: `${h.locdate.toString().slice(0, 4)}-${h.locdate
+              .toString()
+              .slice(4, 6)}-${h.locdate.toString().slice(6, 8)}`,
+          });
+        });
+        // h.locdate는 api 에서 20250101 같은 숫자 (또는 문자열) 로 오는 경우가 일반적이라
+        // toString().slice(...) 로 yyyy-mm-dd 형태로 변환
+        // 결과 객체는 {year, name, date} 형식으로 누적
+        // h.locdate가 없거나 길이가 다르면 잘못된 날짜가 생성될 수 있으므로 추가 검증
+      }
+    }
+
+    return NextResponse.json(allHolidays);
+    // 반환
+  } catch (err) {
+    console.error("Holiday API Error:", err);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
