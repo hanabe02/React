@@ -18,6 +18,16 @@
     변경 된 상태 값에 따라 
     버튼을 클릭시 handleMapClick() 함수가 실행 되는 원리
 
+### redirect()
+    next.js 에서 제공하는 내장 함수,
+    import {redirect} from 'next/navigation';
+
+    App Router 전용의 서버 네비게이션 함수
+     즉 서버 컴포넌트나 서버 액션 내부에서 페이지를 강제로 다른 경로로 이동 시킬 때 사
+     Next.js 는 파일 기반 라우팅 시스템으로
+     즉, 개발자가 직접 app/login/page.tsx 파일을 만드는 순간
+     next.js 가 자동으로 /login url을 등록해준다. 별도의 라우터 설정 필요 x
+
 ### option
 
     option은 HTML <select> 드롭다운 안에서 '선택지 하나'를 나타내는 요소
