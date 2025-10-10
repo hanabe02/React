@@ -29,7 +29,14 @@
             {map.alias || map.name}
         </option>
     ))}
-    
+
+### ...스프레드 연산자
+    의미 그대로 펼쳐서 넣는다는 의미
+    a = [1,2,3] b = [4,5,6]
+    const combined = [...a, ...b] 이런식으로 작성을 한다.
+
+### const [events, setEvents] = useState<CalendarEvent[]>([]); 
+    useState<>() calendarEvent[] 는 타입 객체들의 배열 이라는 뜻
 
 ### select
 
@@ -37,6 +44,19 @@
     렌더 이후 (화면 업데이트) 끝난 뒤 실행되는 '사이드 이펙트'
     여기서 말하는 사이드 이펙트는
      ㄴ 데이터 fetch, 이벤트/구독 등록, 타이머, 콘솔로그, 수동 DOM 조작, 지도 SDK 호출 같은 것을 말한다.
+
+### const [events, setEvents] = useState<CalendarEvent[]>([]);
+    setEvents([...appointmentEvents, ...holidayEvents]);
+     ㄴ setEvents는 단순히 변수를 바꾸는 게 아니라, 컴포넌트의 상태를 업데이트하고 리렌더링을
+        트리거한다는 점이 핵심이다.
+        ex) events = [...appointmentEvents, ...holidayEvents];
+            ㄴ react는 이 변화를 감지하지 못한다.
+            setEvents([...appointmentEvents, ...holidayEvents]);
+            ㄴ react가 변경을 감지하고 다시 렌더링한다.
+        setEvemts 실행시
+            상태값 events 새 값으로 변경
+            그 상태를 사용하는 컴포넌트를 다시 렌더링
+            렌더링 결과를 ui 새롭게 갱신
 
 ### any 타입 제거 
     ex)
@@ -48,6 +68,9 @@
     const formatteddata:Announcement[] = data.map((item) => ({...})
      ㄴ 컴포넌트가 쓰기 편한 모양, author, isPublic, views 항상 숫자, 날짜는 yyyy-mm-dd emd
         이게 Announcement 인터페이스 이다.
+
+        setEvents() 는 events 상태값을 새로운 배열로 바꾸고, 
+        그걸 감지한 react가 다시 렌더링해서 화면을 업데이트 하는 역할을 한다.
 
     즉, 포인트
      ㄴ Peiam > 서버에서 변환 > AnnRaw(JSON) > 프론트에서 가공 > Announcement 상태
