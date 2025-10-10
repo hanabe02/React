@@ -18,6 +18,14 @@
     변경 된 상태 값에 따라 
     버튼을 클릭시 handleMapClick() 함수가 실행 되는 원리
 
+### useSession()
+    nextAuth.js 라이브러리에서 제공하는 react 용 훅
+    즉, 현재 로그인 된 사용자(세션) 정보를 클라이언트 축에서 가져오는 함수이다.
+
+    useSession()은 이 정보를 브라우저에서 가져와서 React 컴포넌트에 전달해준다.
+    지금 누가 로그인되어 있는가? 를 알아내는 역할이다.
+    
+
 ### redirect()
     next.js 에서 제공하는 내장 함수,
     import {redirect} from 'next/navigation';
