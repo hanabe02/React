@@ -1,3 +1,13 @@
+### forEach()
+    forEach()는 자바스크립트에서 배열의 각 요소를 순서대로 하나씩 꺼내서 특정 작업을
+    수행할 때 사용하는 반복문이다.
+    ex) array.forEach((element, index, array) => {}
+    element 현재 순회 중인 배열의 요소
+    index 현재 요소의 인덱스(0부터 시작)
+    array 원본 배열 자체
+
+    즉, forEach()는 배열의 모든 요소에 대해 콜백 함수를 한 번씩 실행해줘 라는 의미다.
+
 ### UseState
     내부 상태값과 그걸 바꾸는 세터 함수를 만드는 코드
 
